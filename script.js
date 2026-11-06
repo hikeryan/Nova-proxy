@@ -1,5 +1,5 @@
 
-const WORKER_URL = "https://YOUR-WORKER-URL.workers.dev";
+const WORKER_URL = "https://novaproxy.hikehsieh83.workers.dev/";
 
 async function search(query) {
   const resultsContainer = document.getElementById("results");
