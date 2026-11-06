@@ -28,7 +28,7 @@ footer{text-align:center;color:#756a89;font-size:11px;margin-top:34px}.small{fon
 </main>
 <script>
 // Paste your deployed Cloudflare Worker URL here, ending in /api/search.
-const SEARCH_API = "https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev/api/search";
+const SEARCH_API = "https://novaproxy.hike.hsieh83.workers.dev/api/search";
 const form=document.getElementById('form'),input=document.getElementById('q'),results=document.getElementById('results'),status=document.getElementById('status'),count=document.getElementById('count');
 form.addEventListener('submit',async e=>{
  e.preventDefault();const query=input.value.trim();if(!query)return;
