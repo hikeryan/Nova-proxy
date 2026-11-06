@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova Proxy</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #090d18;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      padding: 22px 8%;
+      font-size: 23px;
+      font-weight: bold;
+      color: #a78bfa;
+    }
+
+    main {
+      width: 90%;
+      max-width: 750px;
+      margin: 110px auto 40px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 55px;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      color: #9ca3af;
+      margin-bottom: 35px;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 10px;
+      background: #171e30;
+      padding: 10px;
+      border: 1px solid #303b53;
+      border-radius: 14px;
+    }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      padding: 15px;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 14px 22px;
+      background: #8b5cf6;
+      color: white;
+      border: none;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background: #7c3aed;
+    }
+
+    #results {
+      margin-top: 35px;
+      text-align: left;
+    }
+
+    .result {
+      background: #141b2b;
+      border: 1px solid #29344b;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+
+    .result a {
+      color: #a78bfa;
+      font-size: 19px;
+      text-decoration: none;
+    }
+
+    .result p {
+      color: #a1a1aa;
+      line-height: 1.5;
+    }
+
+    .result-url {
+      color: #64748b;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 500px) {
+      h1 { font-size: 42px; }
+      .search-box { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>✦ NOVA</header>
+
+  <main>
+    <h1>Nova Proxy</h1>
+    <p class="subtitle">Explore the internet your way.</p>
+
+    <form class="search-box" id="searchForm">
+      <input
+        id="searchInput"
+        type="text"
+        placeholder="Search anything..."
+        required
+      >
+      <button type="submit">Search</button>
+    </form>
+
+    <div id="results"></div>
+  </main>
+
+  <script>
+    const WORKER_URL =
+      "https://YOUR-WORKER-URL.workers.dev";
+
+    const form = document.getElementById("searchForm");
+    const input = document.getElementById("searchInput");
+    const results = document.getElementById("results");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const query = input.value.trim();
+      if (!query) return;
+
+      results.textContent = "Searching...";
+
+      try {
+        const response = await fetch(
+          `${WORKER_URL}/search?q=${encodeURIComponent(query)}`
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Search failed");
+        }
+
+        results.replaceChildren();
+
+        if (!data.results || data.results.length === 0) {
+          results.textContent = "No results found.";
+          return;
+        }
+
+        data.results.forEach(result => {
+          const card = document.createElement("div");
+          card.className = "result";
+
+          const title = document.createElement("a");
+          title.href = result.url;
+          title.target = "_blank";
+          title.rel = "noopener noreferrer";
+          title.textContent = result.title;
+
+          const url = document.createElement("div");
+          url.className = "result-url";
+          url.textContent = result.url;
+
+          const description = document.createElement("p");
+          description.textContent = result.description;
+
+          card.append(title, url, description);
+          results.appendChild(card);
+        });
+
+      } catch (error) {
+        results.textContent = "Search error: " + error.message;
+      }
+    });
+  </script>
+
+</body>
+</html>
